@@ -13,23 +13,19 @@ const projects = [];
 
 /*  ===== Middlewares ===== */
 
+/* Middleware que loga o número de requisições efetuadas */
 server.use((req, res, next) => {
     console.count("Número de requisições");
     return next();
 });
 
+/* Middleware que verifica se o existe um projeto com o id passado na rota */
 function checkProjectExists(req, res, next) {
     const { id } = req.params;
-    let exists = false;
+    const project = projects.find(p => p.id === id);
 
-    projects.forEach((project) => {
-        if(project.id === id){
-            exists = true;
-        }
-    });    
-
-    if(!exists){
-        return res.status(400).json({error: 'Project does not exists'});
+    if (!project) {
+        return res.status(400).json({ error: 'Project not found' });
     }
 
     return next();
@@ -55,7 +51,7 @@ server.post('/projects', (req, res) => {
 
     projects.push(project);
 
-    return res.json(projects); 
+    return res.json(project); 
 });
 
 // Edita o título de um projeto existente
@@ -63,24 +59,20 @@ server.put('/projects/:id', checkProjectExists, (req, res) => {
     const { id } = req.params;
     const { title } = req.body;
 
-    projects.forEach((project) => {
-        if(project.id === id){
-            project.title = title
-        }
-    });
+    const project = projects.find(p => p.id === id);
+    
+    project.title = title;
 
-    return res.json(projects); 
+    return res.json(project); 
 });
 
 // Remove o projeto com o id selecionado
 server.delete('/projects/:id', checkProjectExists, (req, res) => {
     const { id } = req.params;
 
-    projects.forEach((project, idx) => {
-        if(project.id === id){
-            projects.splice(idx, 1)
-        }
-    });
+    const projectIdx = projects.findIndex(p => p.id === id);
+
+    projects.splice(projectIdx, 1);
 
     return res.send(); 
 });
@@ -90,13 +82,11 @@ server.post('/projects/:id/tasks', checkProjectExists, (req, res) => {
     const { id } = req.params;
     const { title } = req.body;
 
-    projects.forEach((project) => {
-        if(project.id === id){
-            project.tasks.push(title)
-        }
-    });
+    const project = projects.find(p => p.id === id);
 
-    return res.json(projects); 
+    project.tasks.push(title)
+    
+    return res.json(project); 
 });
 
 // Rota usada caso uma url não mapeada seja digitada 
