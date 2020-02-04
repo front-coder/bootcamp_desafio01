@@ -58,6 +58,20 @@ server.delete('/projects/:id', (req, res) => {
     return res.send(); 
 });
 
+// Adiciona tarefas para um projeto
+server.post('/projects/:id/tasks', (req, res) => {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    projects.forEach((project) => {
+        if(project.id === id){
+            project.tasks.push(title)
+        }
+    });
+
+    return res.json(projects); 
+});
+
 // Rota usada caso uma url não mapeada seja digitada 
 server.get('*', (req, res) => {
     return res.json({message: 'Página não encontrada'}); 
