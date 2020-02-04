@@ -45,6 +45,19 @@ server.put('/projects/:id', (req, res) => {
     return res.json(projects); 
 });
 
+// Remove o projeto com o id selecionado
+server.delete('/projects/:id', (req, res) => {
+    const { id } = req.params;
+
+    projects.forEach((project, idx) => {
+        if(project.id === id){
+            projects.splice(idx, 1)
+        }
+    });
+
+    return res.send(); 
+});
+
 // Rota usada caso uma url não mapeada seja digitada 
 server.get('*', (req, res) => {
     return res.json({message: 'Página não encontrada'}); 
