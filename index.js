@@ -2,9 +2,6 @@ const express = require('express');
 const server = express();
 server.use(express.json());
 
-// Contador de requisições
-let count = 0;
-
 //Variaveis de ambiente
 require('dotenv').config();
 
@@ -17,8 +14,7 @@ const projects = [];
 /*  ===== Middlewares ===== */
 
 server.use((req, res, next) => {
-    count++;
-    console.log(`Foram feitas ${count} requisições até o momento`);
+    console.count("Número de requisições");
     return next();
 });
 
